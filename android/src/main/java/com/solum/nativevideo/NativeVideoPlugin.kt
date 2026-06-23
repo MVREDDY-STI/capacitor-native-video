@@ -15,6 +15,8 @@ import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
+import java.io.File
+import java.net.URLDecoder
 
 /**
  * Full-screen hardware-accelerated video overlay for the kiosk.
@@ -42,6 +44,17 @@ class NativeVideoPlugin : Plugin() {
 
     activity.runOnUiThread {
       try {
+        if ("ntimg" == uri.scheme) {
+          call.reject("play failed: unresolved media reference: $url")
+          return@runOnUiThread
+        }
+        if ("file" == uri.scheme) {
+          val path = uri.path
+          if (path.isNullOrBlank() || !File(path).exists()) {
+            call.reject("play failed: file not found: ${path ?: url}")
+            return@runOnUiThread
+          }
+        }
         ensureView()
         val p = player ?: return@runOnUiThread
         view?.resizeMode = when (fit) {
@@ -104,7 +117,7 @@ class NativeVideoPlugin : Plugin() {
   private fun resolveUri(url: String): Uri {
     val marker = "_capacitor_file_"
     if (url.contains(marker)) {
-      val path = url.substringAfter(marker).substringBefore("?")
+      val path = URLDecoder.decode(url.substringAfter(marker).substringBefore("?"), "UTF-8")
       return Uri.parse("file://$path")
     }
     return Uri.parse(url)

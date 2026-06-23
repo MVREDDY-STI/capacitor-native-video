@@ -79,3 +79,14 @@ npm install
 npx cap sync android
 npx cap run android
 ```
+
+### `ExoPlaybackException: Source error` / `FileNotFoundException`
+
+If ExoPlayer reports a missing `/files/ntimg/<id>.mp4`, the native plugin is
+working but the media file was not available on disk when playback started.
+Deploy must send media chunks first, wait for the LCD receiver to verify
+`ntimg/index.json` and exact file sizes, and only then apply `layout.json`.
+
+The plugin also rejects unresolved `ntimg:<id>` refs and missing `file://` paths
+early so the app can fall back or show a useful error instead of failing later in
+the Media3 playback thread.
