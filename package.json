@@ -1,0 +1,26 @@
+{
+  "name": "capacitor-native-video",
+  "version": "0.1.0",
+  "description": "Capacitor plugin: full-screen hardware-accelerated video overlay (ExoPlayer/media3) for kiosk displays. Plays HEVC/H.264 the WebView can't decode.",
+  "main": "dist/plugin.cjs.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "files": ["android", "dist", "README.md", "package.json"],
+  "capacitor": {
+    "android": { "src": "android" }
+  },
+  "keywords": ["capacitor", "plugin", "video", "exoplayer", "media3", "kiosk", "hevc"],
+  "author": "SOLUM",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "peerDependencies": {
+    "@capacitor/core": ">=5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
