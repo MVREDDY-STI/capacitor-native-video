@@ -50,7 +50,32 @@ No JS import is required to register it — the LCD app calls
 ## Notes
 
 - `minSdk 21`, media3 `1.3.1`.
+- The Android plugin is written in Kotlin and applies `kotlin-android`.
+- The plugin declares `androidx.appcompat:appcompat` as `compileOnly` because
+  Capacitor's Android `Plugin.activity` API is typed as `AppCompatActivity`.
+  Without AppCompat on the plugin compile classpath, Gradle fails with:
+  `Cannot access class 'androidx.appcompat.app.AppCompatActivity'` and
+  unresolved `runOnUiThread` / `findViewById` references.
 - `@OptIn(UnstableApi::class)` is used for `PlayerView`/`AspectRatioFrameLayout`;
   if a future media3 version moves these, adjust the import.
 - The overlay sits above the WebView, so call `stop()` when leaving the media
   page or switching to an image (the LCD `media.component` already does this).
+
+## Troubleshooting
+
+### `:capacitor-native-video:compileDebugKotlin FAILED`
+
+If the error mentions `AppCompatActivity`, make sure this plugin's
+`android/build.gradle` contains:
+
+```gradle
+compileOnly "androidx.appcompat:appcompat:1.6.1"
+```
+
+Then reinstall/sync from the host app:
+
+```bash
+npm install
+npx cap sync android
+npx cap run android
+```

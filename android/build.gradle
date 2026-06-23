@@ -25,6 +25,11 @@ dependencies {
   compileOnly project(':capacitor-android')
   compileOnly project(':capacitor-cordova-android-plugins')
 
+  // Capacitor's Plugin.activity is typed as AppCompatActivity. Keep this on the
+  // plugin classpath so Kotlin can compile even when the host app does not
+  // expose AppCompat transitively to local plugin modules.
+  compileOnly "androidx.appcompat:appcompat:1.6.1"
+
   implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.24"
 
   // ExoPlayer (media3) — hardware-accelerated HEVC/H.264 playback. minSdk 21+.
